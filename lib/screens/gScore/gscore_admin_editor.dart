@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 void main() {
   runApp(MaterialApp(
-    title: '관리자 목록 편집',
+    title: '졸업인증제 항목 관리',
     home: GScoreEditor(),
   ));
 }
@@ -274,7 +274,7 @@ class _GScoreEditorState extends State<GScoreEditor> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '관리자 목록 편집',
+          '졸업인증제 항목 관리',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.0,

@@ -17,7 +17,7 @@ final client = HttpClient();
 
 void main() {
   runApp(MaterialApp(
-    title: '졸업점수 신청 현황',
+    title: '졸업인증제 신청 현황',
     home: GScoreForm(),
   ));
 }
@@ -38,7 +38,8 @@ class _GScoreForm extends State<GScoreForm> {
   late Future<dynamic> _posts =  Future(() => null);
 
   List<dynamic> allPosts = [];
-  List<dynamic> filteredPosts = [];
+  List<dynamic> firstFilteredPosts = [];
+  List<dynamic> secondFilteredPosts = [];
 
 
 
@@ -105,12 +106,14 @@ class _GScoreForm extends State<GScoreForm> {
       final data = jsonDecode(response.body);
       _posts = Future.value(data);
       allPosts = await _posts;
-      filteredPosts = allPosts;
+      firstFilteredPosts = allPosts;
+      secondFilteredPosts = allPosts;
 
       setState(() {
         _posts;
         allPosts;
-        filteredPosts;
+        firstFilteredPosts;
+        secondFilteredPosts;
       });
     } else if(response.statusCode == 401){
       throw Exception('로그인 정보 만료됨');
@@ -123,32 +126,34 @@ class _GScoreForm extends State<GScoreForm> {
 
   void _filterStatus(String value){
     if(value == '전체'){
-      filteredPosts = allPosts;
+      secondFilteredPosts = firstFilteredPosts;
     }else if(value == '승인') {
-      filteredPosts =
-          allPosts.where((post) => post['gspost_pass'] == '승인').toList();
+      secondFilteredPosts =
+          firstFilteredPosts.where((post) => post['gspost_pass'] == '승인').toList();
     }else if (value == '미승인') {
 
-      List<dynamic> waitingPosts = allPosts.where((post) => post['gspost_pass'] == '대기').toList();
-      List<dynamic> rejectedPosts = allPosts.where((post) => post['gspost_pass'] == '반려').toList();
-      filteredPosts = [...waitingPosts, ...rejectedPosts];
+      List<dynamic> waitingPosts = firstFilteredPosts.where((post) => post['gspost_pass'] == '대기').toList();
+      List<dynamic> rejectedPosts = firstFilteredPosts.where((post) => post['gspost_pass'] == '반려').toList();
+      secondFilteredPosts = [...waitingPosts, ...rejectedPosts];
 
     }
     setState(() {
-      filteredPosts;
+      secondFilteredPosts;
     });
   }
 
   void _filterWriter(String value) async {
     allPosts = await _posts;
-    filteredPosts = allPosts
+    firstFilteredPosts = allPosts
         .where((post) => post['gsuser_id'].toString().contains(value))
         .toList();
+    secondFilteredPosts = firstFilteredPosts;
     postFilter = '전체';
 
 
     setState(() {
-      filteredPosts;
+      firstFilteredPosts;
+      secondFilteredPosts;
       postFilter;
     });
   }
@@ -225,7 +230,7 @@ class _GScoreForm extends State<GScoreForm> {
                   ),
                 ),
               ),
-              Container(width: MediaQuery.of(context).size.width * 0.16,
+              Container(width: MediaQuery.of(context).size.width * 0.17,
                 alignment: Alignment.center,
                 child: Text(
 
@@ -507,7 +512,7 @@ class _GScoreForm extends State<GScoreForm> {
                   child: Row(
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.13,
                         alignment: Alignment.center,
                         child: Text(
                           "No.",
@@ -519,7 +524,7 @@ class _GScoreForm extends State<GScoreForm> {
                       ),
                       Container(width: 10,),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.14,
+                        width: MediaQuery.of(context).size.width * 0.1,
                         alignment: Alignment.center,
                         child: Text(
                           "신청일",
@@ -530,7 +535,7 @@ class _GScoreForm extends State<GScoreForm> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.3,
+                        width: MediaQuery.of(context).size.width * 0.33,
                         alignment: Alignment.center,
                         child: Text(
                           "활동종류",
@@ -541,7 +546,7 @@ class _GScoreForm extends State<GScoreForm> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.16,
+                        width: MediaQuery.of(context).size.width * 0.1,
                         alignment: Alignment.center,
                         child: Text(
                           "점수",
@@ -552,7 +557,7 @@ class _GScoreForm extends State<GScoreForm> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.13,
+                        width: MediaQuery.of(context).size.width * 0.22,
                         alignment: Alignment.center,
                         child: Text(
                           "신청상태",
@@ -569,7 +574,7 @@ class _GScoreForm extends State<GScoreForm> {
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: FutureBuilder<dynamic>(
-                      future: Future.value(filteredPosts),
+                      future: Future.value(secondFilteredPosts),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final posts = snapshot.data!;

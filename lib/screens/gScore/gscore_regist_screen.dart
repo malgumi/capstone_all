@@ -5,6 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:capstone/screens/gScore/gscore_list_screen.dart';
 import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
 //import 'package:http_parser/http_parser.dart';
 //import 'package:path_provider/path_provider.dart';
 //import 'package:open_file/open_file.dart';
@@ -73,28 +75,73 @@ class _GScoreApcState extends State<GScoreApc> {
 
 
   void _selectFile() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-    );
-    if (result != null && result.files.isNotEmpty) {
-      final PlatformFile file = result.files.first;
-      final File selected = File(file.path!);
-      final int maxSize = 10 * 1024 * 1024; // 10MB를 바이트로 표현한 값
-      final int fileSize = await selected.length();
+    var status = await Permission.storage.status;
+    debugPrint('저장소 접근권한: ' + status.toString());
+    if(await Permission.storage.isDenied) {
+      PermissionStatus permissionStatus = await Permission.storage.request();
+      debugPrint(permissionStatus.isGranted.toString());
+    }
+    if (await Permission.storage.isGranted) {
+      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final PlatformFile file = result.files.first;
+        final File selected = File(file.path!);
+        final int maxSize = 5 * 1024 * 1024; // 10MB를 바이트로 표현한 값
+        final int fileSize = await selected.length();
 
-      if (fileSize <= maxSize) {
-        if (['jpg', 'jpeg', 'png', 'pdf'].contains(file.extension)) {
-          setState(() {
-            selectedFile = file;
-            fileCheck = 1;
-          });
+        if (fileSize <= maxSize) {
+          if (['jpg', 'jpeg', 'png', 'pdf'].contains(file.extension)) {
+            setState(() {
+              selectedFile = file;
+              fileCheck = 1;
+            });
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) =>
+                  AlertDialog(
+                    title: Text('파일 확장자 오류'),
+                    content: Text('JPG, PNG, PDF 형식의 파일만 지원합니다.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('확인'),
+                      ),
+                    ],
+                  ),
+            );
+          }
         } else {
           showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: Text('파일 확장자 오류'),
-              content: Text('JPG, PNG, PDF 형식의 파일만 지원합니다.'),
+            builder: (context) =>
+                AlertDialog(
+                  title: Text('파일 크기 초과'),
+                  content: Text('5MB 미만의 파일만 업로드 가능합니다.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                ),
+          );
+        }
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('파일 액세스 권한 오류'),
+              content: Text('파일을 선택하려면 파일 액세스 권한이 필요합니다.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -104,26 +151,9 @@ class _GScoreApcState extends State<GScoreApc> {
                 ),
               ],
             ),
-          );
-        }
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('파일 크기 초과'),
-            content: Text('10MB 미만의 파일만 업로드 가능합니다.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('확인'),
-              ),
-            ],
-          ),
-        );
-      }
+      );
     }
+
   }
 
   Future<void> _writePostAndFile() async {
@@ -195,7 +225,6 @@ class _GScoreApcState extends State<GScoreApc> {
       if(fileCheck==1) {
         var jsonResponse = jsonDecode(response.body);
         postId = jsonResponse['postId'];
-        //uploadFile();
       }
     }else{
       print(response.statusCode);
@@ -208,33 +237,45 @@ class _GScoreApcState extends State<GScoreApc> {
 
     if (selectedFile != null) {
       final String fileName = selectedFile!.name;
-      final bytes = File(selectedFile!.path!).readAsBytesSync();
+      final filePath = selectedFile!.path!;
 
       final maxRetries = 3; // 최대 재시도 횟수
       var retryCount = 0; // 현재 재시도 횟수
 
+      // Timeout values
+      final connectTimeout = 60000; // 60 seconds
+      final receiveTimeout = 30000; // 30 seconds
+
       while (retryCount < maxRetries) {
         try {
-          final request = http.MultipartRequest(
-            'POST',
-            Uri.parse('http://203.247.42.144:443/gScore/upload'),
+          var formData = FormData.fromMap({
+            'file': await MultipartFile.fromFile(filePath, filename: fileName),
+            'gspostid': postId.toString(),
+          });
+
+          // Set timeout values for this Dio instance
+          var dio = Dio(
+            BaseOptions(
+              connectTimeout: connectTimeout,
+              receiveTimeout: receiveTimeout,
+              headers: {'Connection': 'keep-alive'},
+            ),
           );
 
-          request.files.add(
-            http.MultipartFile.fromBytes('file', bytes, filename: fileName),
+          var response = await dio.post(
+            'http://203.247.42.144:443/gScore/upload',
+            data: formData,
+            onSendProgress: (int sent, int total) {
+              print("$sent $total");
+            },
           );
 
-          request.fields['gspostid'] = postId.toString();
-
-          final response = await request.send();
           print(response.statusCode);
 
           if (response.statusCode == 201) {
             print("파일 등록 성공");
 
-            var responseData = await response.stream.bytesToString();
-            var decodedData = json.decode(responseData);
-            var file = decodedData['file'];
+            var file = response.data['file'];
 
             fileInfo = {
               'post_id': postId,
@@ -264,7 +305,7 @@ class _GScoreApcState extends State<GScoreApc> {
   }
 
   Future<void> _uploadfileToDB() async {
-    final maxRetries = 3; // 최대 재시도 횟수
+    final maxRetries = 4; // 최대 재시도 횟수
     var retryCount = 0; // 현재 재시도 횟수
 
     while (retryCount < maxRetries) {

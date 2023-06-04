@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 //신청창
 void main() {
   runApp(MaterialApp(
-    title: '관리자 신청 페이지',
+    title: '단체 승인글 작성',
     home: GScoreAdminRegist(),
   ));
 }
@@ -214,7 +214,7 @@ class _GScoreAdminRegistState extends State<GScoreAdminRegist> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '관리자 신청 페이지',
+          '단체 승인게시글 작성',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.0,

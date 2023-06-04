@@ -129,7 +129,7 @@ class _AdminCheckPageState extends State<AdminCheckPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '학생정보 조회',
+          '학생 점수 조회',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

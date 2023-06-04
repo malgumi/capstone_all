@@ -13,7 +13,7 @@ final client = HttpClient();
 
 void main() {
   runApp(MaterialApp(
-    title: '관리자 작성 목록',
+    title: '단체 승인글 목록',
     home: AdminGScoreForm(),
   ));
 }
@@ -236,7 +236,7 @@ class _AdminGScoreForm extends State<AdminGScoreForm> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            '  관리자 작성 목록  ',
+            '  단체 승인글 목록  ',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20.0,

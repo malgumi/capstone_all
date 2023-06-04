@@ -8,9 +8,9 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:capstone/screens/gScore/gscore_list_screen.dart';
 import 'package:flutter/services.dart';
-
-
-
+import 'package:share/share.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -78,7 +78,10 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
   int wasUploadedFile = 0; //업로드된 파일이 있었는가?
   int fileCheck = 0; // 첨부파일이 있는가?
 
+
   PlatformFile? selectedFile; //저장소에서 선택한 파일
+
+  String downloadedFilePath = '';
 
   //작성된 게시글 번호
   // 현재 페이지에는 int postUserId 변수에 할당되어 있음
@@ -267,28 +270,73 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
   }
 
   void _selectFile() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-    );
-    if (result != null && result.files.isNotEmpty) {
-      final PlatformFile file = result.files.first;
-      final File selected = File(file.path!);
-      final int maxSize = 10 * 1024 * 1024; // 10MB를 바이트로 표현한 값
-      final int fileSize = await selected.length();
+    var status = await Permission.storage.status;
+    debugPrint('저장소 접근권한: ' + status.toString());
+    if(await Permission.storage.isDenied) {
+      PermissionStatus permissionStatus = await Permission.storage.request();
+      debugPrint(permissionStatus.isGranted.toString());
+    }
+    if (await Permission.storage.isGranted) {
+      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final PlatformFile file = result.files.first;
+        final File selected = File(file.path!);
+        final int maxSize = 5 * 1024 * 1024; // 10MB를 바이트로 표현한 값
+        final int fileSize = await selected.length();
 
-      if (fileSize <= maxSize) {
-        if (['jpg', 'jpeg', 'png', 'pdf'].contains(file.extension)) {
-          setState(() {
-            selectedFile = file;
-            fileCheck = 1;
-          });
+        if (fileSize <= maxSize) {
+          if (['jpg', 'jpeg', 'png', 'pdf'].contains(file.extension)) {
+            setState(() {
+              selectedFile = file;
+              fileCheck = 1;
+            });
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) =>
+                  AlertDialog(
+                    title: Text('파일 확장자 오류'),
+                    content: Text('JPG, PNG, PDF 형식의 파일만 지원합니다.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('확인'),
+                      ),
+                    ],
+                  ),
+            );
+          }
         } else {
           showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: Text('파일 확장자 오류'),
-              content: Text('JPG, PNG, PDF 형식의 파일만 지원합니다.'),
+            builder: (context) =>
+                AlertDialog(
+                  title: Text('파일 크기 초과'),
+                  content: Text('5MB 미만의 파일만 업로드 가능합니다.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                ),
+          );
+        }
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text('파일 액세스 권한 오류'),
+              content: Text('파일을 선택하려면 파일 액세스 권한이 필요합니다.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -298,30 +346,12 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
                 ),
               ],
             ),
-          );
-        }
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('파일 크기 초과'),
-            content: Text('10MB 미만의 파일만 업로드 가능합니다.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('확인'),
-              ),
-            ],
-          ),
-        );
-      }
+      );
     }
+
   }
 
   Future<String?> downloadFile() async {
-
     final response = await http.get(
       Uri.parse('http://203.247.42.144:443/gScore/download?reqPath=${Uri.encodeComponent(uploadedFilePath ?? '')}'),
       headers: <String, String>{
@@ -329,35 +359,51 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
       },
     );
 
-
     if (response.statusCode == 200) {
       final bytes = response.bodyBytes;
       Directory? directory;
 
       // Android-specific code
       if (Platform.isAndroid) {
-        directory = await getExternalStorageDirectory();
-      } else {
-        // iOS-specific code
+        directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) directory = await getExternalStorageDirectory();
+      } else if (Platform.isIOS || Platform.isMacOS) {
         directory = await getApplicationDocumentsDirectory();
+      } else if (Platform.isWindows) {
+        directory = Directory('C:/Downloads');
+        if (!await directory.exists()) {
+          directory = await getApplicationDocumentsDirectory();
+        }
       }
 
       print(directory);
 
       if (directory != null) {
-        final file = File('${directory.path}/$uploadedFileName');
+        final file = await _createUniqueFileName(directory, uploadedFileName!);
         await file.writeAsBytes(bytes);
-        return '파일이 다운로드 되었습니다';
-
+        return '파일이 다운로드되었습니다.';
       } else {
         return '저장 폴더 설정 오류';
       }
-    } else if(response.statusCode == 404){
+    } else if (response.statusCode == 404) {
       return '파일이 존재하지 않습니다.';
+    } else {
+      return '파일 다운로드 중 오류가 발생하였습니다.';
     }
-    else{
-      return '파일 다운로드중 오류가 발생하였습니다.';
+  }
+
+  Future<File> _createUniqueFileName(Directory directory, String originalFileName) async {
+    final fileExtension = originalFileName.split('.').last;
+    final baseFileName = originalFileName.substring(0, originalFileName.length - fileExtension.length - 1);
+    String uniqueFileName = originalFileName;
+    int count = 1;
+
+    while (await File('${directory.path}/$uniqueFileName').exists()) {
+      uniqueFileName = '$baseFileName($count).$fileExtension';
+      count++;
     }
+    downloadedFilePath = '${directory.path}/$uniqueFileName';
+    return File('${directory.path}/$uniqueFileName');
   }
 
   Future<void> updateFile() async{
@@ -388,34 +434,48 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
   }
 
   Future<void> uploadFile() async {
+
     if (selectedFile != null) {
       final String fileName = selectedFile!.name;
-      final bytes = File(selectedFile!.path!).readAsBytesSync();
+      final filePath = selectedFile!.path!;
 
       final maxRetries = 3; // 최대 재시도 횟수
       var retryCount = 0; // 현재 재시도 횟수
 
+      // Timeout values
+      final connectTimeout = 60000; // 60 seconds
+      final receiveTimeout = 30000; // 30 seconds
+
       while (retryCount < maxRetries) {
         try {
-          final request = http.MultipartRequest(
-            'POST',
-            Uri.parse('http://203.247.42.144:443/gScore/upload'),
+          var formData = FormData.fromMap({
+            'file': await MultipartFile.fromFile(filePath, filename: fileName),
+            'gspostid': widget.post['gspost_id'].toString(),
+          });
+
+          // Set timeout values for this Dio instance
+          var dio = Dio(
+            BaseOptions(
+              connectTimeout: connectTimeout,
+              receiveTimeout: receiveTimeout,
+              headers: {'Connection': 'keep-alive'},
+            ),
           );
 
-          request.files.add(
-            http.MultipartFile.fromBytes('file', bytes, filename: fileName),
+          var response = await dio.post(
+            'http://203.247.42.144:443/gScore/upload',
+            data: formData,
+            onSendProgress: (int sent, int total) {
+              print("$sent $total");
+            },
           );
-
-          request.fields['gspostid'] = widget.post['gspost_id'].toString();
-          final response = await request.send();
 
           print(response.statusCode);
+
           if (response.statusCode == 201) {
             print("파일 등록 성공");
 
-            var responseData = await response.stream.bytesToString();
-            var decodedData = json.decode(responseData);
-            var file = decodedData['file'];
+            var file = response.data['file'];
 
             fileInfo = {
               'post_id': widget.post['gspost_id'],
@@ -445,7 +505,7 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
   }
 
   Future<void> _uploadfileToDB() async {
-    final maxRetries = 3; // 최대 재시도 횟수
+    final maxRetries = 4; // 최대 재시도 횟수
     var retryCount = 0; // 현재 재시도 횟수
 
     while (retryCount < maxRetries) {
@@ -479,7 +539,7 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
   Future<void> deleteFile() async {
     setState(() => _isLoading = true);
     if(wasUploadedFile==1) {
-      final maxRetries = 3; // 최대 재시도 횟수
+      final maxRetries = 4; // 최대 재시도 횟수
       var retryCount = 0; // 현재 재시도 횟수
       while (retryCount < maxRetries) {
         try {
@@ -578,7 +638,7 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
     final postId = widget.post['gspost_id'];
     final url = Uri.parse('http://203.247.42.144:443/gScore/deletePost?postId=$postId');
 
-    final maxRetries = 3; // 최대 재시도 횟수
+    final maxRetries = 4; // 최대 재시도 횟수
     var retryCount = 0; // 현재 재시도 횟수
     while (retryCount < maxRetries) {
       try {
@@ -1093,6 +1153,9 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
                               onPressed: ()async {
                                 final String? downResult = await downloadFile();
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(downResult ?? '')));
+                                if((Platform.isIOS || Platform.isMacOS) && downResult! == '파일이 다운로드되었습니다.'){
+                                  Share.shareFiles([downloadedFilePath]);
+                                }
                               },
                               icon: Icon(
                                 Icons.file_download,
@@ -1131,11 +1194,11 @@ class _GScoreApcCtState extends State<GScoreApcCt> {
                       child: Material(
                           elevation: 5.0, //그림자효과
                           borderRadius: BorderRadius.circular(30.0), //둥근효과
-                          color: ((userPermission == 2 || _applicationStatus == '대기') && userPermission != 3)
+                          color: ((userPermission == 2 || _applicationStatus == '대기' || _applicationStatus == '반려') && userPermission != 3)
                               ? const Color(0xffC1D3FF)
                               : const Color(0xff808080),
                           child: MaterialButton(
-                            onPressed: ((userPermission == 2 || _applicationStatus == '대기'|| _isLoading) && userPermission !=3) ? () {
+                            onPressed: ((userPermission == 2 || _applicationStatus == '대기' || _applicationStatus == '반려' || _isLoading) && userPermission !=3) ? () {
                               deletePostConfirmation();
                             } : null,
                             child: _isLoading ? CircularProgressIndicator() :Text(
