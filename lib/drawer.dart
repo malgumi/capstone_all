@@ -416,23 +416,18 @@ class _MyDrawerState extends State<MyDrawer> {
                     }
                 ),
 
-                ExpansionTile(
-                    title: Text('과목정보'),
-                    leading: Icon(Icons.menu_book_rounded, color: Colors.grey[800]),
-                    children: <Widget>[
-                      ListTile(
-                        leading: Icon(Icons.search, color: Colors.grey[800]),
-                        title: Text('전공과목 정보'),
+                ListTile(
+                  leading: Icon(Icons.menu_book_rounded, color: Colors.grey[800]),
+                  title: Text('전공과목 정보'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MSmain()),
+                    );
+                  },
+                ),
 
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MSmain()),
-                          );
-                        },
-                      ),
-                    ]),
                 _accountPermission == "2" || _accountPermission == "3" ?
                 ExpansionTile(
                     title: Text('관리자 페이지'),

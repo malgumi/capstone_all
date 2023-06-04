@@ -73,6 +73,12 @@ class _MSmain extends State<MSmain> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: Text(
             '과목 정보',
             style: TextStyle(
