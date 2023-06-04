@@ -391,13 +391,16 @@ class _MyDrawerState extends State<MyDrawer> {
                           );
                         }
                     ),
+
                     ListTile(
-                        leading: Icon(
-                            Icons.assignment_turned_in_outlined,
-                            color: Colors.grey[800]),
-                        title: Text('이수과목 선택'),
-                        onTap: () {
-                          Navigator.push(
+                      title: Text('이수과목 선택'),
+                      leading: Icon(
+                          Icons.assignment_turned_in_outlined,
+                          color: Colors.grey[800]
+                      ),
+                      onTap: () {
+
+                        Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) =>
                                 CompletedSubjectSelectPage()),

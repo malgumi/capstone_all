@@ -115,11 +115,9 @@ class _GraduationGuidePageState extends State<GraduationGuidePage> {
     }
   }
 
-  //입학년도 가져오기
-
 
   // 학번을 나타내는 위젯
- /* Widget buildStudentIdWidget(BuildContext context) {
+  /* Widget buildStudentIdWidget(BuildContext context) {
     return FutureBuilder<int>(
         future: getAdmissionYear(),
         builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
