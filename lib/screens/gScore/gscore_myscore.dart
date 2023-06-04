@@ -197,7 +197,7 @@ class _MyScorePage extends State<MyScorePage> with TickerProviderStateMixin {
   }
 
   _launchURL() async {
-    const url = 'http://ce.hannam.ac.kr/sub5/menu_1.html?pPostNo=176133&pPageNo=4&pRowCount=10&isGongjiPostList=N';
+    const url = 'http://ce.hannam.ac.kr/sub3/menu_2.html';
     final Uri uri = Uri.parse(url);
     print(uri);
     await launchUrl(uri);

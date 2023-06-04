@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -313,16 +314,14 @@ class SelfCalcScreenState extends State<SelfCalcScreen> {
             const SizedBox(height: 16),
 
             TextFormField(
-              readOnly: _activityName == 'TOPCIT' || _activityName == '참여 일수'
-                  ? false
-                  : true,
+              readOnly: _activityName == 'TOPCIT' || _activityName == '참여 일수' ? false : true,
               decoration: const InputDecoration(
                 labelText: '점수',
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
                 _score = 0;
-                if (value.isNotEmpty && int.parse(value) > 0) {
+                if (value.isNotEmpty && int.tryParse(value) != null) {
                   int tempScore = int.parse(value);
 
                   if (_activityType == '인턴십' || _activityType == '해외연수') {
@@ -350,9 +349,13 @@ class SelfCalcScreenState extends State<SelfCalcScreen> {
                 }
               },
               controller: TextEditingController(
-                  text: activityNames[_activityType]?[_activityName]
-                      ?.toString() ??
-                      ''),
+                text: activityNames[_activityType]?[_activityName]?.toString() ?? '',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                LengthLimitingTextInputFormatter(3),
+              ],
             ),
             SizedBox(height: 16.0),
 
