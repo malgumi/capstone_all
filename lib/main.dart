@@ -281,7 +281,7 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fileName = '$studentId.png';
-    final imageUrl = 'http://203.247.42.144:443/user/loading?image=$fileName';
+    final imageUrl = 'http://203.247.42.144:443/user/loding?image=$fileName';
 
     String departmentText = '컴퓨터공학과 | $grade학년';
     if (permission == '2' || permission == '3') {
