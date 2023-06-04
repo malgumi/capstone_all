@@ -154,7 +154,7 @@ class _CompletedSubjectSelectPageState
                               "전공기초과목",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 14.0,
+                                fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -180,7 +180,7 @@ class _CompletedSubjectSelectPageState
                             }
                             print('선택한 전공기초과목: $_compulsorySelections');
                           },
-                          selectedColor: Color(0xffDDDDDD),
+                          selectedColor: Color(0xff858585),
                           selectedItemsTextStyle:
                               TextStyle(color: Color(0xffffffff)),
                           chipDisplay: MultiSelectChipDisplay(
@@ -244,7 +244,7 @@ class _CompletedSubjectSelectPageState
                           buttonText: const Text(
                             "전공선택과목",
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

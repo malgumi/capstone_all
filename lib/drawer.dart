@@ -1,5 +1,5 @@
 import 'package:capstone/screens/completion/completed_subject_select.dart';
-import 'package:capstone/screens/completion/completion_status.dart';
+import 'package:capstone/screens/completion/mycompletion.dart';
 import 'package:capstone/screens/gScore/gscore_myscore.dart';
 import 'package:capstone/screens/gScore/gscore_admin_check.dart';
 import 'package:capstone/screens/login/adminsingup.dart';
@@ -386,40 +386,23 @@ class _MyDrawerState extends State<MyDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) =>
-                                CompletionStatusPage(
-                                  student_id: '',
-                                  grade: '',
-                                  major_type: '',
-                                )),
+                                CompletionStatusPage()),
                           );
                         }
                     ),
-
                     ListTile(
-                      title: Text('이수과목 선택'),
-                      leading: Icon(
-                          Icons.assignment_turned_in_outlined,
-                          color: Colors.grey[800]
-                      ),
-                      onTap: () {
-                        /*
-                        Navigator.push(
+                        leading: Icon(
+                            Icons.assignment_turned_in_outlined,
+                            color: Colors.grey[800]),
+                        title: Text('이수과목 선택'),
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) =>
-                                SubjectSelect(subjectId: 0),
-                            ));
-*/
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              CompletionStatusPage(
-                                student_id: '',
-                                grade: '',
-                                major_type: '',
-                              )),
-                        );
-                      },
-                    )
+                                CompletedSubjectSelectPage()),
+                          );
+                        }
+                    ),
                   ],),
 
                 ListTile(
