@@ -1,4 +1,5 @@
 import 'package:capstone/screens/completion/completed_subject_select.dart';
+import 'package:capstone/screens/completion/graduation_guide.dart';
 import 'package:capstone/screens/completion/mycompletion.dart';
 import 'package:capstone/screens/gScore/gscore_myscore.dart';
 import 'package:capstone/screens/gScore/gscore_admin_check.dart';
@@ -376,7 +377,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ExpansionTile(
                   title: Text('이수현황'),
                   leading: Icon(
-                      Icons.add_task_rounded, color: Colors.grey[800]),
+                      Icons.beenhere_rounded, color: Colors.grey[800]),
                   children: <Widget>[
                     ListTile(
                         leading: Icon(
@@ -400,6 +401,19 @@ class _MyDrawerState extends State<MyDrawer> {
                             context,
                             MaterialPageRoute(builder: (context) =>
                                 CompletedSubjectSelectPage()),
+                          );
+                        }
+                    ),
+                    ListTile(
+                        leading: Icon(
+                            Icons.task_alt,
+                            color: Colors.grey[800]),
+                        title: Text('졸업 가이드'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                GraduationGuidePage()),
                           );
                         }
                     ),

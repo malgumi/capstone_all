@@ -163,7 +163,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
       backgroundColor: Color(0xffffffff),
       appBar: AppBar(
         title: const Text(
-          '이수과목',
+          '나의 이수현황',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.0,
@@ -182,7 +182,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
             Container(
               alignment: Alignment.centerLeft,
               height: 120,
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.only(left: 25.0, top: 16.0,right: 16.0,bottom: 16.0,),
               decoration: BoxDecoration(
                 color: Color(0xffffffff),
               ),
@@ -324,7 +324,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                               '전공 이수과목',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -395,17 +395,17 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
             ),
             SizedBox(height: 15.0),
 
-            //이수과목 과목명 불러오기
+            //이수한 전공선택과목 과목명
             Container(
               padding: const EdgeInsets.all(20.0),
               margin: const EdgeInsets.only(left: 30.0, right: 30.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                    width: 0.8,
+                    width: 1.2,
                     color: Color(0xff858585),
                     style: BorderStyle.solid),
-                color: Color(0xffffffff),
+                color: Color(0xffF5F5F5),
               ),
 
               //이수한 전공선택과목 과목명
@@ -428,7 +428,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                           '전공선택과목',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 14.0,
+                            fontSize: 15.0,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -439,7 +439,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                       Text(
                         '${completionProvider.completedElective.length}과목 | ${completionProvider.totalElectiveCredits}학점',
                         style: TextStyle(
-                          color: Color(0xff858585),
+                          color: Color(0xff686868),
                           fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
@@ -476,10 +476,10 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                    width: 0.8,
+                    width: 1.2,
                     color: Color(0xff858585),
                     style: BorderStyle.solid),
-                color: Color(0xffffffff),
+                color: Color(0xffF5F5F5),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -503,7 +503,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                               '전공기초과목',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 14.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -514,7 +514,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                           Text(
                             '${completionProvider.completedCompulsory.length}과목 | ${completionProvider.totalCompulsoryCredits}학점',
                             style: TextStyle(
-                              color: Color(0xff858585),
+                              color: Color(0xff686868),
                               fontSize: 14.0,
                               fontWeight: FontWeight.w500,
                             ),
@@ -525,10 +525,10 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                         height: 8.0,
                       ),
                       Text(
-                        '※ 전공기초과목은 필수이수과목이고 전공기초학점은 교양학점으로 인정됨.',
+                        '※ 전공기초학점은 교양학점으로 인정됨.',
                         style: TextStyle(
                           color: Color(0xff858585),
-                          fontSize: 10.0,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
