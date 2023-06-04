@@ -289,77 +289,83 @@ class ProfileWidget extends StatelessWidget {
     }
 
     return Container(
-      // Profile Widget의 디자인과 동작을 구현한 코드
-      // 예를 들어 프로필 이미지, 사용자 이름, 소개 등을 포함할 수 있습니다.
       color: Color(0xFFF5F5F5),
-      height: MediaQuery.of(context).size.height * 0.3, // 수직 방향으로 더 크기 설정
-
+      height: MediaQuery.of(context).size.height * 0.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              // border: Border.all(color: Colors.black, width: 1.0), // 사진 테두리 색 설정
-            ),
-            child: ClipOval(
-              child: SizedBox(
-                width: 120,
-                height: 120,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    if (fileName != null)
-                      Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          // 이미지 로딩 중 에러 발생 시 기본 프로필 사진 반환
-                          return Image.asset(
-                            'assets/profile.png',
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    else
-                      Image.asset(
-                        'assets/profile.png',
-                        fit: BoxFit.cover,
-                      ),
-                  ],
+          Flexible(
+            flex: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                // border: Border.all(color: Colors.black, width: 1.0), // 사진 테두리 색 설정
+              ),
+              child: ClipOval(
+                child: SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (fileName != null)
+                        Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            // 이미지 로딩 중 에러 발생 시 기본 프로필 사진 반환
+                            return Image.asset(
+                              'assets/profile.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      else
+                        Image.asset(
+                          'assets/profile.png',
+                          fit: BoxFit.cover,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
           SizedBox(height: 20),
-          Text(
-            '$userName',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              height: 0.85,
-              color: Colors.black,
-              decoration: TextDecoration.none,
-              decorationColor: Colors.black,
-              decorationThickness: 1,
+          Flexible(
+            flex: 1,
+            child: Text(
+              '$userName',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                height: 0.85,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                decorationColor: Colors.black,
+                decorationThickness: 1,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
           SizedBox(height: 15),
-          Text(
-            departmentText,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-              fontSize: 15,
-              height: 0.48,
-              color: Colors.black,
-              decoration: TextDecoration.none,
-              decorationColor: Colors.black,
-              decorationThickness: 1,
+          Flexible(
+            flex: 1,
+            child: Text(
+              departmentText,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+                fontSize: 15,
+                height: 0.48,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                decorationColor: Colors.black,
+                decorationThickness: 1,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
