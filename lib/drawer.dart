@@ -378,11 +378,11 @@ class _MyDrawerState extends State<MyDrawer> {
                 ExpansionTile(
                   title: Text('이수현황'),
                   leading: Icon(
-                      Icons.beenhere_rounded, color: Colors.grey[800]),
+                      Icons.ballot_rounded, color: Colors.grey[800]),
                   children: <Widget>[
                     ListTile(
                         leading: Icon(
-                            Icons.add_task_rounded, color: Colors.grey[800]),
+                            Icons.add_reaction_outlined, color: Colors.grey[800]),
                         title: Text('나의 이수현황'),
                         onTap: () {
                           Navigator.push(
@@ -396,7 +396,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     ListTile(
                       title: Text('이수과목 선택'),
                       leading: Icon(
-                          Icons.assignment_turned_in_outlined,
+                          Icons.add_task_rounded,
                           color: Colors.grey[800]
                       ),
                       onTap: () {
@@ -410,7 +410,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                     ListTile(
                         leading: Icon(
-                            Icons.task_alt,
+                            Icons.auto_stories_rounded,
                             color: Colors.grey[800]),
                         title: Text('졸업 가이드'),
                         onTap: () {

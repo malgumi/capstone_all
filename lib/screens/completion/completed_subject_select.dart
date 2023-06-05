@@ -125,7 +125,7 @@ class _CompletedSubjectSelectPageState
                   //전공기초과목 field
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    margin: EdgeInsets.all(15.0),
+                    margin: EdgeInsets.only(left: 15.0, top: 15.0, bottom: 7.0, right: 15.0),
                     decoration: BoxDecoration(
                       color: const Color(0xffF5F5F5),
                       borderRadius: BorderRadius.circular(10),
@@ -180,11 +180,11 @@ class _CompletedSubjectSelectPageState
                             }
                             print('선택한 전공기초과목: $_compulsorySelections');
                           },
-                          selectedColor: Color(0xffDDDDDD),
+                          selectedColor: Color(0xffF29811),
                           selectedItemsTextStyle:
                           TextStyle(color: Color(0xffffffff)),
                           chipDisplay: MultiSelectChipDisplay(
-                            chipColor: Color(0xffCBCBCB),
+                            chipColor: Color(0xffFFBC58),
                             textStyle: TextStyle(color: Colors.black),
                             onTap: (value) {
                               setState(() {
@@ -219,7 +219,19 @@ class _CompletedSubjectSelectPageState
                       ],
                     ),
                   ),
-                  SizedBox(height: 40),
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    margin: EdgeInsets.all(5.0),
+                    child: Text(
+                      '※ 19~20학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
+                      style: TextStyle(
+                        color: Color(0xff858585),
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
 
                   //전공선택과목 field
                   Container(
@@ -238,6 +250,7 @@ class _CompletedSubjectSelectPageState
                         // 전공선택과목 BottomSheet
                         MultiSelectBottomSheetField(
                           initialChildSize: 0.4,
+                          maxChildSize: 0.6,
                           listType: MultiSelectListType.CHIP,
                           searchable: true,
                           searchHint: '과목명을 입력하세요',

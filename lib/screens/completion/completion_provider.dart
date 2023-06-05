@@ -400,18 +400,75 @@ class CompletionProvider extends ChangeNotifier {
 
 
   //전공학점 관리
+  //전공기초과목 학점
   int get totalCompulsoryCredits {
     return _completedCompulsory
         .fold(0, (sum, item) => sum + item.credit); // 전공기초과목의 학점을 합산
   }
 
+  //총 전공학점 : 전공선택과목 학점
   int get totalElectiveCredits {
     return _completedElective
         .fold(0, (sum, item) => sum + item.credit); // 전공선택과목의 학점을 합산
   }
+  /*//총 전공학점 : 전공선택과목 학점
+  Future<int> get totalElectiveCredits async {
+    int baseCredits = _completedElective
+        .fold(0, (sum, item) => sum + item.credit); // 전공선택과목의 학점을 합산
+
+    int admissionYear = await getAdmissionYear();
+    if (admissionYear >= 2019 && admissionYear <= 2022) {
+      // 이수한 전공기초과목에서 "컴퓨터개론"이라는 과목이 있는지 확인
+      bool hasIntroToComputer = _completedCompulsory
+          .any((subject) => subject.subjectName == "컴퓨터개론");
+
+      if (hasIntroToComputer) {
+        baseCredits += 3;  // "컴퓨터개론"이라는 과목이 있다면 3학점을 추가
+      }
+    }
+
+    return baseCredits;
+  }*/
+
+
+  //학번으로 입학년도 구하는 메서드
+  Future<int> getAdmissionYear() async {
+    String studentId = await getStudentIdFromToken();
+    String yearStr = studentId.substring(2, 4);
+    int year = int.parse(yearStr);
+
+    // 학번이 2000년 이후의 경우 대비
+    if(year < 40) year += 2000;
+    else year += 7504; //관리자 권한 조교 ID일 때 처리
+
+    return year;
+  }
 
 
 
+  //졸업기준학점 설정하는 메서드
+  Future<int> getCreditToGraduate() async {
+    int admissionYear = await getAdmissionYear();
+    if (admissionYear <= 2018) {
+      return 60;
+    } else if (admissionYear <= 2022) {
+      return 66;
+    } else {
+      return 54;
+    }
+  }
+
+  //부족한 전공학점 계산하는 메서드
+  Future<int> getLackingCredits() async {
+    int creditsToGraduate = await getCreditToGraduate();
+    int totalElectiveCredits = this.totalElectiveCredits;
+
+    // 이수한 전공학점이 졸업 기준학점보다 작은 경우 부족한 학점을 계산하고 반환합니다.
+    // 그렇지 않으면, 0을 반환합니다.
+    return (creditsToGraduate > totalElectiveCredits)
+        ? creditsToGraduate - totalElectiveCredits
+        : 0;
+  }
 
 
 
