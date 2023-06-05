@@ -238,7 +238,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                           ),
                         ),
                         //총전공학점
-                        Consumer<CompletionProvider>(
+/*                        Consumer<CompletionProvider>(
                           builder: (context, completionProvider, child) {
                             return Text(
                               '${completionProvider.totalElectiveCredits}',
@@ -249,7 +249,32 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                               ),
                             );
                           },
+                        )*/
+                        //이수한 총 전공학점
+                        FutureBuilder<int>(
+                          future: Provider.of<CompletionProvider>(context,
+                                  listen: false)
+                              .getTotalElectiveCredits(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Text(
+                                '${snapshot.data}',
+                                style: TextStyle(
+                                  color: Color(0xff2D0BB7),
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              );
+                            }
+                          },
                         ),
+                        //입학년도별 졸업기준학점
                         FutureBuilder<int>(
                             future: Provider.of<CompletionProvider>(context,
                                     listen: false)
@@ -273,26 +298,6 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                                 );
                               }
                             }),
-/*                        FutureBuilder<int>(
-                            future: Provider.of<CompletionProvider>(context, listen: false).getCreditToGraduate(),
-                            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('오류가 발생했습니다. ${snapshot.error}');
-                              } else {
-                                int? creditsToGraduate = snapshot.data;
-                                return Text(
-                                  '/ ${creditsToGraduate} 학점',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                );
-                              }
-                            }
-                        )*/
                       ],
                     ),
                   ),
@@ -451,13 +456,44 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                         width: 8.0,
                       ),
                       Text(
-                        '${completionProvider.completedElective.length}과목 | ${completionProvider.totalElectiveCredits}학점',
+                        '${completionProvider.completedElective.length}과목 | ',
                         style: TextStyle(
                           color: Color(0xff686868),
                           fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      FutureBuilder<int>(
+                        future: Provider.of<CompletionProvider>(context,
+                                listen: false)
+                            .getTotalElectiveCredits(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<int> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Text(
+                              '${snapshot.data}학점',
+                              style: TextStyle(
+                                color: Color(0xff686868),
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      /*Text(
+                        '${completionProvider.completedElective.length}과목 | ${completionProvider.totalElectiveCredits}학점',
+                        style: TextStyle(
+                          color: Color(0xff686868),
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),*/
                     ],
                   ),
                   SizedBox(
@@ -603,7 +639,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    side: BorderSide(color: Color(0xff341F87),width: 2.0),
+                    side: BorderSide(color: Color(0xff341F87), width: 2.0),
                     minimumSize: Size(250, 50),
                   ),
                 ),

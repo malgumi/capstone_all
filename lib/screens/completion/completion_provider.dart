@@ -406,13 +406,15 @@ class CompletionProvider extends ChangeNotifier {
         .fold(0, (sum, item) => sum + item.credit); // 전공기초과목의 학점을 합산
   }
 
-  //총 전공학점 : 전공선택과목 학점
+  /*//총 전공학점 : 전공선택과목 학점
   int get totalElectiveCredits {
     return _completedElective
         .fold(0, (sum, item) => sum + item.credit); // 전공선택과목의 학점을 합산
   }
-  /*//총 전공학점 : 전공선택과목 학점
-  Future<int> get totalElectiveCredits async {
+*/
+
+  //총 전공학점 : 전공선택과목 학점
+  Future<int> getTotalElectiveCredits() async {
     int baseCredits = _completedElective
         .fold(0, (sum, item) => sum + item.credit); // 전공선택과목의 학점을 합산
 
@@ -428,8 +430,7 @@ class CompletionProvider extends ChangeNotifier {
     }
 
     return baseCredits;
-  }*/
-
+  }
 
   //학번으로 입학년도 구하는 메서드
   Future<int> getAdmissionYear() async {
@@ -458,10 +459,12 @@ class CompletionProvider extends ChangeNotifier {
     }
   }
 
-  //부족한 전공학점 계산하는 메서드
+
+
+//부족한 전공학점 계산하는 메서드
   Future<int> getLackingCredits() async {
     int creditsToGraduate = await getCreditToGraduate();
-    int totalElectiveCredits = this.totalElectiveCredits;
+    int totalElectiveCredits = await getTotalElectiveCredits();
 
     // 이수한 전공학점이 졸업 기준학점보다 작은 경우 부족한 학점을 계산하고 반환합니다.
     // 그렇지 않으면, 0을 반환합니다.
@@ -469,8 +472,6 @@ class CompletionProvider extends ChangeNotifier {
         ? creditsToGraduate - totalElectiveCredits
         : 0;
   }
-
-
 
 }
 

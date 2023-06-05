@@ -249,8 +249,8 @@ class _CompletedSubjectSelectPageState
                       children: <Widget>[
                         // 전공선택과목 BottomSheet
                         MultiSelectBottomSheetField(
-                          initialChildSize: 0.4,
-                          maxChildSize: 0.6,
+                          initialChildSize: 0.6,
+                          maxChildSize: 0.8,
                           listType: MultiSelectListType.CHIP,
                           searchable: true,
                           searchHint: '과목명을 입력하세요',
