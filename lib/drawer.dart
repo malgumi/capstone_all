@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:capstone/screens/post/notice_1st.dart';
 import 'package:capstone/screens/prof/prof_profile.dart';
+import 'package:capstone/screens/gScore/gscore_list_screen.dart';
 import 'package:capstone/screens/gScore/gscore_admin_editor.dart';
 import 'package:capstone/screens/gScore/gscore_admin_list.dart';
 import 'package:capstone/screens/subject/MSmain.dart';
@@ -464,6 +465,16 @@ class _MyDrawerState extends State<MyDrawer> {
                           }
                       ),
                       ListTile(
+                          leading: Icon(Icons.article, color: Colors.grey[800]),
+                          title: Text('졸업인증제 신청 목록'),
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => GScoreForm()),
+                            );
+                          }
+                      ),
+                      ListTile(
                           leading: Icon(Icons.edit_note, color: Colors.grey[800]),
                           title: Text('졸업인증제 항목 관리'),
                           onTap: (){
@@ -485,7 +496,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       ListTile(
                         leading: Icon(Icons.search, color: Colors.grey[800]),
-                        title: Text('졸업인증점수 검색'),
+                        title: Text('졸업인증제 학생정보 열람'),
                         onTap: () {
                           Navigator.push(
                             context,
