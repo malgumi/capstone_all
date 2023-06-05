@@ -627,7 +627,7 @@ class _gScoreCheckState extends State<gScore_check> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.name == "취업/대학원진학" || widget.name == "졸업작품입상") {
+    if (widget.name == "취업/대학원진학") {
       return GestureDetector(
         onTap: _showScoreDetails,
         child: Container(
@@ -656,7 +656,7 @@ class _gScoreCheckState extends State<gScore_check> {
             children: [
               Container(
                 child: Text(
-                  widget.name,
+                  "취업/대학원",
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
@@ -665,13 +665,13 @@ class _gScoreCheckState extends State<gScore_check> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 3),
               Container(
                 color: Colors.transparent,
                 child: Text(
                   '$myscore / $maxscore',
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 13,
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
@@ -715,20 +715,20 @@ class _gScoreCheckState extends State<gScore_check> {
                 child: Text(
                   widget.name,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 3),
               Container(
                 color: Colors.transparent,
                 child: Text(
                   '$myscore / $maxscore',
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 13,
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
