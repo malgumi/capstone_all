@@ -368,14 +368,6 @@ class _GScoreEditorState extends State<GScoreEditor> {
                             String name = entry.key;
                             int score = entry.value;
                             return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color:
-                                  _activityNameController.text == name ?
-                                  Colors.blue : Colors.transparent,
-                                  width: 2.0,
-                                ),
-                              ),
                               child: ElevatedButton(
                                 onPressed: () {
                                   if(_selectedActivityName == name){
