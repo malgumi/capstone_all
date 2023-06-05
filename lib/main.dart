@@ -297,36 +297,40 @@ class ProfileWidget extends StatelessWidget {
         children: [
           Flexible(
             flex: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                // border: Border.all(color: Colors.black, width: 1.0), // 사진 테두리 색 설정
-              ),
-              child: ClipOval(
-                child: SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      if (fileName != null)
-                        Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            // 이미지 로딩 중 에러 발생 시 기본 프로필 사진 반환
-                            return Image.asset(
-                              'assets/profile.png',
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        )
-                      else
-                        Image.asset(
-                          'assets/profile.png',
-                          fit: BoxFit.cover,
-                        ),
-                    ],
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  // Add border if needed
+                  // border: Border.all(color: Colors.black, width: 1.0),
+                ),
+                child: ClipOval(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (fileName != null)
+                          Image.network(
+                            imageUrl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              // 이미지 로딩 중 에러 발생 시 기본 프로필 사진 반환
+                              return Image.asset(
+                                'assets/profile.png',
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        else
+                          Image.asset(
+                            'assets/profile.png',
+                            fit: BoxFit.cover,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -371,6 +375,8 @@ class ProfileWidget extends StatelessWidget {
         ],
       ),
     );
+
+
   }
 }
 

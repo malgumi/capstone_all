@@ -104,7 +104,7 @@ class _AddProfessorPageState extends State<AddProfessorPage> {
               width: double.infinity,
               height: 30.0,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 150.0), // 왼쪽과 오른쪽 마진 값 설정
+                padding: EdgeInsets.symmetric(horizontal: 140.0), // 가로 여백 조정
                 child: ElevatedButton(
                   onPressed: () {
                     addProfessor();
@@ -123,6 +123,8 @@ class _AddProfessorPageState extends State<AddProfessorPage> {
                 ),
               ),
             ),
+
+
           ],
         ),
       ),

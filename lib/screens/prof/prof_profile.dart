@@ -112,68 +112,70 @@ class _ProfProfile extends State<ProfProfile> {
             ),
           ),
           SizedBox(height: 16.0),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 8.0, 0.0, 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Text(
-                    '교수 정보',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 30.0),
-                  child: Text(
-                    'Professor Information',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF858585),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 16.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AddProfessorPage()),
-                          );
-                        },
-                        child: Text(
-                          '추가',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xffC1D3FF), // 배경 색상 변경
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+           Padding(
+             padding: const EdgeInsets.fromLTRB(20.0, 8.0, 0.0, 8.0),
+             child: Row(
+               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children: [
+                 Padding(
+                   padding: const EdgeInsets.only(right: 16.0),
+                   child: Text(
+                     '교수 정보',
+                     style: TextStyle(
+                       fontSize: 20.0,
+                       fontWeight: FontWeight.bold,
+                       color: Colors.black,
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.only(right: 0),
+                   child: Text(
+                     'Professor Information',
+                     style: TextStyle(
+                       fontSize: 18.0,
+                       color: Color(0xFF858585),
+                     ),
+                   ),
+                 ),
+                 Expanded(
+                   child: Align(
+                     alignment: Alignment.centerRight,
+                     child: Container(
+                       margin: EdgeInsets.only(right: 16.0),
+                       child: ElevatedButton(
+                         onPressed: () {
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => AddProfessorPage()),
+                           );
+                         },
+                         child: Text(
+                           '추가',
+                           style: TextStyle(
+                             fontSize: 18.0,
+                             fontWeight: FontWeight.bold,
+                             color: Colors.white,
+                           ),
+                         ),
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: Color(0xffC1D3FF), // 배경 색상 변경
+                           padding: EdgeInsets.symmetric(vertical: 6.0),
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(0.0),
+                           ),
+                         ),
+                       ),
+                     ),
+                   ),
+                 ),
+               ],
+             ),
+           ),
 
-          // 기본 화면 위젯과 검색 위젯 사이의 간격 조정
+
+
+           // 기본 화면 위젯과 검색 위젯 사이의 간격 조정
           Expanded(
             child: Container(
               width: double.infinity,
