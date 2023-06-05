@@ -59,4 +59,4 @@ File - New - Project From Version Control... 클릭 후 깃허브 주소 입력.
 ios유저는,, 앱스토어에 등록을 하는 방법밖에 없어서 현재 테스트 해 볼 길이 없습니다.<br>
 테스트 도중 찾으신 버그는 각 기능 담당 팀에게 알려주시면 감사하겠습니다.<br>
 
-https://drive.google.com/file/d/1wNXmg4spI7qZ3TwXBSWVzzvnCEbwok3s/view?usp=sharing
+https://drive.google.com/file/d/1v-Qp42VVZw5EBWJ5T2DA-5dtDfDcBIfm/view?usp=sharing
