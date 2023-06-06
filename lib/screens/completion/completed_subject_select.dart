@@ -119,7 +119,43 @@ class _CompletedSubjectSelectPageState
               ),
               SizedBox(height: 30),
 
-              //전기 전선 MultiSelectBottomSheetField
+              //과목에 대한 공지사항
+              Container(
+                padding: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xffffffff),
+                  //borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xff858585),
+                    width: 2.0,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '※ 공지사항',
+                      style: TextStyle(
+                        color: Color(0xff565656),
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Text('19~20학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
+                      style: TextStyle(
+                        color: Color(0xff858585),
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),)
+                  ],
+                ),
+              ),
+              SizedBox(height: 30,),
+
+              //전공과목 선택 MultiSelectBottomSheetField
               Column(
                 children: [
                   //전공기초과목 field
@@ -219,18 +255,7 @@ class _CompletedSubjectSelectPageState
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    margin: EdgeInsets.all(5.0),
-                    child: Text(
-                      '※ 19~20학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
-                      style: TextStyle(
-                        color: Color(0xff858585),
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+
                   SizedBox(height: 20),
 
                   //전공선택과목 field

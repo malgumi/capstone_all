@@ -237,19 +237,6 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        //총전공학점
-/*                        Consumer<CompletionProvider>(
-                          builder: (context, completionProvider, child) {
-                            return Text(
-                              '${completionProvider.totalElectiveCredits}',
-                              style: TextStyle(
-                                color: Color(0xff2D0BB7),
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            );
-                          },
-                        )*/
                         //이수한 총 전공학점
                         FutureBuilder<int>(
                           future: Provider.of<CompletionProvider>(context,
