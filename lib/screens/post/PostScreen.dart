@@ -377,7 +377,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     DateTime postDateTime = DateTime.parse(widget.post['post_date']);
-    DateTime updatedDateTime = postDateTime.add(Duration(hours: 9));
+    DateTime updatedDateTime = postDateTime.add(Duration(hours: 18));
 
     return Scaffold(
       appBar: AppBar(

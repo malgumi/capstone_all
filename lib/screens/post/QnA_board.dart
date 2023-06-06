@@ -54,15 +54,18 @@ class QnABoardScreenState extends State<QnABoardScreen> {
 
   Widget _buildPostItem(BuildContext context, dynamic post) {
     DateTime postDateTime = DateTime.parse(post['post_date']);
-    DateTime updatedDateTime = postDateTime.add(Duration(hours: 9));
+    DateTime updatedDateTime = postDateTime.add(Duration(hours: 18));
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async{
+        await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => PostScreen(post: post),
           ),
         );
+        setState(() {
+          _posts = fetchPosts();
+        });
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
