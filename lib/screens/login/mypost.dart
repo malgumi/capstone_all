@@ -71,7 +71,7 @@ class _MyPostState extends State<MyPost> {
     }
 
     DateTime postDateTime = DateTime.parse(post['post_date']);
-    DateTime updatedDateTime = postDateTime.add(Duration(hours: 9));
+    DateTime updatedDateTime = postDateTime.add(Duration(hours: 18));
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
