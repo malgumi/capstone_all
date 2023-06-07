@@ -12,9 +12,6 @@ import 'package:capstone/screens/completion/completed_subject_select.dart';
 
 //Provider을 이용해 이수현황을 관리하는 파일
 
-
-
-
 // 이수과목 모델
 class CompletedSubjects {
   final int studentId;
@@ -47,6 +44,9 @@ class CompletionProvider extends ChangeNotifier {
   List<Subject> get completedCompulsory => _completedCompulsory;
   List<Subject> get completedElective => _completedElective;
 
+  List<Subject> _prevCompulsorySelections = [];
+  List<Subject> _prevElectiveSelections = [];
+
 
   //JWT 토큰에서 학생 ID를 가져오는 메서드 - 학생ID로 사용자를 식별해 이수정보를 저장하기 위함.
   Future<String> getStudentIdFromToken() async {
@@ -69,7 +69,6 @@ class CompletionProvider extends ChangeNotifier {
   }
 
   //이수과목
-
   // SecureStorage에 이수한 과목을 저장하는 메서드
   Future<void> saveSubjects() async {
     List<Subject> allSubjects = []
@@ -106,6 +105,36 @@ class CompletionProvider extends ChangeNotifier {
   _completedCompulsory와 _completedElective 리스트는 SecureStorage에 저장된 데이터로 업데이트
 */
 
+
+  //로컬에서 과목을 추가하는 메서드
+  void addSubject(Subject subject) {
+    if (subject.subjectDivision == 1) {
+      //_completedCompulsory 리스트에 subjectId가 같은 과목이 있는지 검사
+      if (!_completedCompulsory.any((element) => element.subjectId == subject.subjectId)) {
+        _completedCompulsory.add(subject);
+        print('로컬에 과목 추가 성공');
+        notifyListeners();
+      }
+    } else if (subject.subjectDivision == 2) {
+      if (!_completedElective.any((element) => element.subjectId == subject.subjectId)) {
+        _completedElective.add(subject);
+        print('로컬에 과목 추가 성공');
+        notifyListeners();
+      }
+    }
+  }
+
+  //로컬에서 과목을 삭제하는 메서드
+  void removeSubject(Subject subject) {
+    if (subject.subjectDivision == 1) {
+      _completedCompulsory.remove(subject);
+    } else if (subject.subjectDivision == 2) {
+      _completedElective.remove(subject);
+    }
+    print('로컬에서 과목 삭제 성공');
+    notifyListeners();
+
+  }
 
   //서버에서 최신 데이터를 가져와 로컬 저장소를 업데이트 하는 메서드
   Future<void> fetchCompletedSubjects(int studentId) async {
@@ -154,6 +183,7 @@ class CompletionProvider extends ChangeNotifier {
 
 
 
+  //배열방식으로 데이터 보냄
   //서버에 이수과목 정보를 보내는 메서드 - 이수과목 저장
   Future<void> saveCompletedSubjects() async {
     final url = Uri.parse('http://203.247.42.144:443/user/required/add');
@@ -184,169 +214,90 @@ class CompletionProvider extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      print('서버 응답: ${response.body}'); // 서버의 응답을 출력합니다.
+      print('서버에 과목 저장 성공. 서버 응답: ${response.body}'); // 서버의 응답을 출력합니다.
     } else {
-      print('서버 응답: ${response.body}'); // 에러 발생 시 서버의 응답을 출력합니다.
+      print('서버에 과목 저장 실패.서버 응답: ${response.body}'); // 에러 발생 시 서버의 응답을 출력합니다.
     }
   }
 
-
-  // 서버에서 이수과목 정보를 삭제하는 메서드
-  //서버에서 단일 이수과목을 삭제하는 메서드
-  Future<void> deleteCompletedSubject(int studentId, int subjectId, int proId) async {
-    await deleteCompletedSubjects(studentId, [{
-      'subject_id': subjectId,
-      'pro_id': proId
-    }]);
-  }
-
-  //서버에서 복수의 이수과목을 삭제하는 메서드
-  Future<void> deleteCompletedSubjects(int studentId, List<Map<String, dynamic>> subjects) async {
+  //배열방식으로 데이터 보냄
+  //이수한 과목을 삭제하는 메서드
+  Future<void> deleteCompletedSubjects() async {
     final url = Uri.parse('http://203.247.42.144:443/user/required/delete');
+    final studentId = await getStudentIdFromToken();
 
-    final List<Map<String, dynamic>> body = subjects.map((subject) => {
-      'student_id': studentId,
-      ...subject,
-    }).toList();
+    final List<Map<String, dynamic>> data = [];
+    for (final subject in _completedCompulsory) {
+      data.add({
+        'student_id': studentId,
+        'subject_id': subject.subjectId,
+        'pro_id': subject.proId,
+      });
+    }
+    for (final subject in _completedElective) {
+      data.add({
+        'student_id': studentId,
+        'subject_id': subject.subjectId,
+        'pro_id': subject.proId,
+      });
+    }
 
-    print('이수한 과목 정보를 삭제하는 deleteCompletedSubjects 메서드 Request body: ${jsonEncode(body)}'); // 로깅
+    final body = json.encode(data);
+    print('이수한 과목 정보를 삭제하는 deleteCompletedSubjects 메서드 Request body: $body'); // 로깅
+
     final response = await http.delete(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
+      body: body,
     );
 
     if (response.statusCode == 200) {
-      print('서버 응답: ${response.body}'); // 서버의 응답을 출력합니다.
+      print('서버에서 과목 삭제 성공. 서버 응답: ${response.body}'); // 서버의 응답을 출력합니다.
     } else {
-      print('에러 발생. 서버 응답: ${response.body}'); // 에러 발생 시 서버의 응답을 출력합니다.
+      print('서버에서 과목 삭제 실패. 서버 응답: ${response.body}'); // 에러 발생 시 서버의 응답을 출력합니다.
     }
   }
 
-
-
-  //서버에 이수과목을 추가하고 저장하는 메서드
-  Future<bool> addSubjectToServer(Subject subject) async {
-    final studentId = await getStudentIdFromToken();
-
-    final response = await http.post(
-      Uri.parse('http://203.247.42.144:443/user/required/add'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'student_id': studentId,
-        'subject_id': subject.subjectId,
-        'pro_id': subject.proId,
-      }),
-    );
-
-    print('HTTP 상태 코드: ${response.statusCode}');
-    //print('HTTP 응답 본문: ${response.body}');
-
-    if (response.statusCode == 200) {
-      print('서버에 과목 추가 성공: ${response.body}'); // 서버의 응답을 출력
-      return true;
-    } else {
-      print('서버에 과목 추가 실패. 에러 메시지: ${response.body}'); // 서버의 응답을 출력
-      return false;
+  void confirmSelections(
+      List<Subject> compulsorySelections,
+      List<Subject> electiveSelections,
+      ) async {
+    // 전공 기초과목 처리
+    for (Subject subject in compulsorySelections) {
+      if (!_prevCompulsorySelections.contains(subject)) {
+        addSubject(subject);
+        await saveCompletedSubjects();
+      }
     }
-  }
-
-
-  //서버에 이수과목을 삭제 메서드
-  Future<bool> removeSubjectFromServer(Subject subject) async {
-    final studentId = await getStudentIdFromToken();
-
-    final response = await http.delete(
-      Uri.parse('http://203.247.42.144:443/user/required/delete'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'student_id': studentId,
-        'subject_id': subject.subjectId,
-        'pro_id': subject.proId,
-      }),
-    );
-
-    print('HTTP 상태 코드: ${response.statusCode}');
-    //print('HTTP 응답 본문: ${response.body}');
-
-    if (response.statusCode == 200) {
-      print('서버에서 과목 삭제 성공: ${response.body}'); // 서버의 응답을 출력
-      return true;
-    } else {
-      print('서버에서 과목 삭제 실패. 에러 메시지: ${response.body}'); // 서버의 응답을 출력
-      return false;
+    for (Subject subject in _prevCompulsorySelections) {
+      if (!compulsorySelections.contains(subject)) {
+        removeSubject(subject);
+        await deleteCompletedSubjects();
+      }
     }
-  }
+    _prevCompulsorySelections = List<Subject>.from(compulsorySelections);
 
-
-
-  /*
-  //과목 추가
-  Future<bool> addSubjectToServer(Subject subject) async {
-    final studentId = await getStudentIdFromToken();
-
-    final response = await http.post(
-      Uri.parse('http://203.247.42.144:443/user/required/add'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'student_id': studentId,
-        'subject_id': subject.subjectId,
-        'pro_id': subject.proId,
-      }),
-    );
-
-    print('HTTP 상태 코드: ${response.statusCode}');
-    print('HTTP 응답 본문: ${response.body}');
-
-    if (response.statusCode == 200) {
-      print('서버 응답: ${response.body}'); // 서버의 응답을 출력
-      return true;
-    } else {
-      print('에러 발생. 서버 응답: ${response.body}'); // 서버의 응답을 출력
-      return false;
+    // 전공 선택과목 처리
+    for (Subject subject in electiveSelections) {
+      if (!_prevElectiveSelections.contains(subject)) {
+        addSubject(subject);
+        await saveCompletedSubjects();
+      }
     }
-  }
-
-  // 과목 삭제
-  Future<bool> removeSubjectFromServer(Subject subject) async {
-    final studentId = await getStudentIdFromToken();
-
-    final response = await http.delete(
-      Uri.parse('http://203.247.42.144:443/user/required/delete'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'student_id': studentId,
-        'subject_id': subject.subjectId,
-        'pro_id': subject.proId,
-      }),
-    );
-
-    print('HTTP 상태 코드: ${response.statusCode}');
-    print('HTTP 응답 본문: ${response.body}');
-
-    if (response.statusCode == 200) {
-      print('서버 응답: ${response.body}'); // 서버의 응답을 출력
-      return true;
-    } else {
-      print('에러 발생. 서버 응답: ${response.body}'); // 서버의 응답을 출력
-      return false;
+    for (Subject subject in _prevElectiveSelections) {
+      if (!electiveSelections.contains(subject)) {
+        removeSubject(subject);
+        await deleteCompletedSubjects();
+      }
     }
+    _prevElectiveSelections = List<Subject>.from(electiveSelections);
+
+    print('서버에 보낼 전공기초과목: $compulsorySelections');
+    print('서버에 보낼 전공선택과목: $electiveSelections');
   }
-*/
 
 
-  // 모든 과목을 반환하는 메서드 - Provider가 관리하고 있는 모든 이수한 과목을 가져오기
-  List<Subject> getAllSubjects() {
-    return [..._completedCompulsory, ..._completedElective];
-  }
+
 
 
   //전공기초과목 업데이트
@@ -356,6 +307,7 @@ class CompletionProvider extends ChangeNotifier {
       _completedCompulsory = newSubjects;
       notifyListeners();
     }
+    print('전공기초과목 업데이트 성공');
   }
 
   //전공선택과목 업데이트
@@ -364,39 +316,11 @@ class CompletionProvider extends ChangeNotifier {
       _completedElective = newSubjects;
       notifyListeners();
     }
+    print('전공선택과목 업데이트 성공');
   }
 
 
 
-  //로컬에서 과목을 추가하는 메서드
-  void addSubject(Subject subject) {
-    if (subject.subjectDivision == 1) {
-      //_completedCompulsory 리스트에 subjectId가 같은 과목이 있는지 검사
-      if (!_completedCompulsory.any((element) => element.subjectId == subject.subjectId)) {
-        _completedCompulsory.add(subject);
-        print('로컬에 과목 추가 성공');
-        notifyListeners();
-      }
-    } else if (subject.subjectDivision == 2) {
-      if (!_completedElective.any((element) => element.subjectId == subject.subjectId)) {
-        _completedElective.add(subject);
-        print('로컬에 과목 추가 성공');
-        notifyListeners();
-      }
-    }
-  }
-
-  //로컬에서 과목을 삭제하는 메서드
-  void removeSubject(Subject subject) {
-    if (subject.subjectDivision == 1) {
-      _completedCompulsory.remove(subject);
-    } else if (subject.subjectDivision == 2) {
-      _completedElective.remove(subject);
-    }
-    print('로컬에서 과목 삭제 성공');
-    notifyListeners();
-
-  }
 
 
   //전공학점 관리
@@ -406,12 +330,6 @@ class CompletionProvider extends ChangeNotifier {
         .fold(0, (sum, item) => sum + item.credit); // 전공기초과목의 학점을 합산
   }
 
-  /*//총 전공학점 : 전공선택과목 학점
-  int get totalElectiveCredits {
-    return _completedElective
-        .fold(0, (sum, item) => sum + item.credit); // 전공선택과목의 학점을 합산
-  }
-*/
 
   //총 전공학점 : 전공선택과목 학점
   Future<int> getTotalElectiveCredits() async {

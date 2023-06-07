@@ -110,6 +110,12 @@ class _GraduationGuidePageState extends State<GraduationGuidePage> {
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(
           '졸업 가이드',
           style: TextStyle(
