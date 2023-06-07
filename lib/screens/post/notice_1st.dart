@@ -369,7 +369,7 @@ class NoticeTalkScreenState extends State<NoticeTalkScreen_1> {
               endIndent: 0.0,
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 30), // 상단 패딩: 8.0, 하단 패딩: 0, 좌우 패딩: 16.0
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Align buttons with equal spacing
                 children: [
@@ -432,6 +432,7 @@ class NoticeTalkScreenState extends State<NoticeTalkScreen_1> {
               ),
             ),
             Container(
+              padding: EdgeInsets.fromLTRB(6.0, 0, 6.0, 15),
               child: buildTextComposer(),
             ),
           ],
