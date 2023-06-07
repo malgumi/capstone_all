@@ -112,7 +112,7 @@ class _CompletedSubjectSelectPageState
                 child: const Text(
                   '이수한 과목을 선택하세요!',
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -122,10 +122,9 @@ class _CompletedSubjectSelectPageState
               //과목에 대한 공지사항
               Container(
                 padding: EdgeInsets.all(10.0),
-                margin: EdgeInsets.all(5.0),
+                margin: EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xffffffff),
-                  //borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xfff5f5f5),
                   border: Border.all(
                     color: const Color(0xff858585),
                     width: 2.0,
@@ -139,18 +138,16 @@ class _CompletedSubjectSelectPageState
                       '※ 공지사항',
                       style: TextStyle(
                         color: Color(0xff565656),
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10,),
                     Text(
-                      '19~20학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
+                      '19~22학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
                       style: TextStyle(
                         color: Color(0xff858585),
-                        fontSize: 14.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w500,
                       ),
                     )
@@ -159,7 +156,7 @@ class _CompletedSubjectSelectPageState
               ),
               SizedBox(height: 30,),
 
-              //전공과목 선택 MultiSelectBottomSheetField
+              //전공과목 선택 Field
               Column(
                 children: [
                   //전공기초과목 field
@@ -192,9 +189,9 @@ class _CompletedSubjectSelectPageState
                 },
                 style: ElevatedButton.styleFrom(
                   textStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xffffff),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xffffffff),
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
@@ -205,7 +202,7 @@ class _CompletedSubjectSelectPageState
                 child: Text('저장'),
               ),
 
-              SizedBox(height: 50.0),
+              SizedBox(height: 100.0),
             ],
           ),
         ),
@@ -216,7 +213,7 @@ class _CompletedSubjectSelectPageState
 
 
 
-//전공기초과목
+//전공기초과목 필드
 class CompulsoryMultiSelect extends StatefulWidget {
   final List<MultiSelectItem<Subject>> compulsoryItems;
 
@@ -239,10 +236,10 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
       margin: EdgeInsets.only(
           left: 15.0, top: 15.0, bottom: 7.0, right: 15.0),
       decoration: BoxDecoration(
-        color: const Color(0xffF5F5F5),
+        color: const Color(0xffffffff),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xff858585),
+          color: Colors.black,
           width: 1.5,
         ),
       ),
@@ -256,8 +253,8 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
               "전공기초과목",
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w800,
               ),
             ),
             title: Padding(
@@ -266,8 +263,8 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
                 "전공기초과목",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
             ),
@@ -277,31 +274,14 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
               _compulsorySelections = values.cast<Subject>();
               Provider.of<CompletionProvider>(context, listen: false)
                   .updateCompulsory(_compulsorySelections);
-              /*
-                    _compulsorySelections = values.cast<Subject>();
-                    //이수한 전공기초과목 업데이트
-                    completionProvider
-                        .updateCompulsory(_compulsorySelections);
 
-                    // 추가된 과목들 처리
-                    for (Subject subject in _compulsorySelections) {
-                      completionProvider.addSubject(subject);
-                    }
-                    // 삭제된 과목들 처리
-                    for (Subject subject
-                    in completionProvider.completedCompulsory) {
-                      if (!_compulsorySelections.contains(subject)) {
-                        completionProvider.removeSubject(subject);
-                      }
-                    }
-                    print('선택한 전공기초과목: $_compulsorySelections');*/
             },
             selectedColor: Color(0xffF29811),
             selectedItemsTextStyle:
-            TextStyle(color: Color(0xffffffff)),
+            TextStyle(color: Color(0xffffffff), fontWeight: FontWeight.w600),
             chipDisplay: MultiSelectChipDisplay(
               chipColor: Color(0xffFFBC58),
-              textStyle: TextStyle(color: Colors.black),
+              textStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
               onTap: (value) {
                 setState(() {
                   _compulsorySelections.remove(value as Subject);
@@ -323,7 +303,11 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
 
 
 
-//전공선택과목
+
+
+
+
+//전공선택과목 필드
 class ElectiveMultiSelect extends StatefulWidget {
   final List<MultiSelectItem<Subject>> electiveItems;
 
@@ -346,26 +330,26 @@ class _ElectiveMultiSelectState extends State<ElectiveMultiSelect> {
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
-        color: const Color(0xffF5F5F5),
+        color: const Color(0xffffffff),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xff858585),
-          width: 2,
+          color: Colors.black,
+          width: 1.5,
         ),
       ),
       child: Column(
         children: <Widget>[
           MultiSelectBottomSheetField(
             initialChildSize: 0.6,
-            maxChildSize: 0.8,
+            maxChildSize: 1.2,
             listType: MultiSelectListType.CHIP,
             searchable: true,
             searchHint: '과목명을 입력하세요',
             buttonText: const Text(
               "전공선택과목",
               style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w800,
               ),
             ),
             title: Padding(
@@ -373,8 +357,8 @@ class _ElectiveMultiSelectState extends State<ElectiveMultiSelect> {
               child: const Text(
                 "전공선택과목",
                 style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
             ),
@@ -384,27 +368,18 @@ class _ElectiveMultiSelectState extends State<ElectiveMultiSelect> {
               _electiveSelections = values.cast<Subject>();
               Provider.of<CompletionProvider>(context, listen: false)
                   .updateElective(_electiveSelections);
-              /*// 추가된 과목들 처리
-              for (Subject subject in _electiveSelections) {
-                completionProvider.addSubject(subject);
-              }
-              // 삭제된 과목들 처리
-              for (Subject subject
-              in completionProvider.completedElective) {
-                if (!_electiveSelections.contains(subject)) {
-                  completionProvider.removeSubject(subject);
-                }
-              }
-              print('선택한 전공선택과목: $_electiveSelections');*/
+
             },
             //전공선택과목 선택할 때의 chip컬러
             selectedColor: Color(0xff89AAFF),
             selectedItemsTextStyle:
-            TextStyle(color: Color(0xffffffff)),
+            TextStyle(color: Color(0xffffffff),
+                fontWeight: FontWeight.w600),
             chipDisplay: MultiSelectChipDisplay(
               //전공선택과목 선택 후 chip컬러
               chipColor: Color(0xffC1D3FF),
-              textStyle: TextStyle(color: Colors.black),
+              textStyle: TextStyle(color: Colors.black,
+                  fontWeight: FontWeight.w600),
               onTap: (value) {
                 setState(() {
                   _electiveSelections.remove(value as Subject);
