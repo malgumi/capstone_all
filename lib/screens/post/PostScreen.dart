@@ -20,7 +20,7 @@ class _PostScreenState extends State<PostScreen> {
   String _errorMessage = '';
   bool _isLoading = false;
   TextEditingController _commentController = TextEditingController();
-
+  double _bottomInset = 0;
   @override
   void initState() {
     super.initState();
@@ -378,8 +378,12 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     DateTime postDateTime = DateTime.parse(widget.post['post_date']);
     DateTime updatedDateTime = postDateTime.add(Duration(hours: 18));
-
-    return Scaffold(
+    return GestureDetector(
+      onTap: () {
+        // 터치가 발생하면 키보드를 강제로 닫기
+        FocusScope.of(context).unfocus();
+      },
+        child:Scaffold(
       appBar: AppBar(
         title: Text(
           _boardName ?? '',
@@ -712,22 +716,27 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 64.0,
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _commentController,
-                  decoration: InputDecoration(
-                    hintText: '댓글을 입력해주세요.',
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
+      resizeToAvoidBottomInset: true,
+      bottomSheet: Container(
+        padding: EdgeInsets.only(bottom: _bottomInset),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _commentController,
+                decoration: InputDecoration(
+                  hintText: '댓글을 입력해주세요.',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
                   ),
                 ),
+                onEditingComplete: () {
+                  setState(() {
+                    _bottomInset = 0;
+                  });
+                },
               ),
+            ),
               IconButton(
                 onPressed: () {
                   if (_commentController.text.isNotEmpty) {
@@ -743,6 +752,7 @@ class _PostScreenState extends State<PostScreen> {
         ),
       ),
     );
+
 
   }
 }
