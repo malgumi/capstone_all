@@ -456,11 +456,13 @@ class NoticeTalkScreenState extends State<NoticeTalkScreen_1> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    post['post_title'],
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.only(left: 10.0, top: 5.0),
+                    child: Text(
+                      post['post_title'],
+                      style: TextStyle(
+                        fontSize: 18.0,
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
