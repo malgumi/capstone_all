@@ -86,6 +86,7 @@ class _CompletedSubjectSelectPageState
     var completionProvider =
     Provider.of<CompletionProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Color(0xffffffff),
       appBar: AppBar(
         title: const Text(
           '이수과목',
@@ -144,7 +145,7 @@ class _CompletedSubjectSelectPageState
                     ),
                     SizedBox(height: 10,),
                     Text(
-                      '19~22학번 학생은 컴퓨터개론을 선택하시면 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
+                      '19~22학번 학생은 컴퓨터개론을 선택하면 전공기초과목에 포함되지만 전공선택과목을 이수한 것으로 인정되어 전공학점에 포함됩니다.',
                       style: TextStyle(
                         color: Color(0xff858585),
                         fontSize: 16.0,
@@ -155,6 +156,16 @@ class _CompletedSubjectSelectPageState
                 ),
               ),
               SizedBox(height: 30,),
+
+              Text(
+                '버튼을 클릭한 후 나타나는 하단 선택창에서 과목을 선택 & 선택해제 하셔야 수정사항이 정확하게 반영됩니다.',
+                style: TextStyle(
+                  color: Color(0xff858585),
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 10,),
 
               //전공과목 선택 Field
               Column(
@@ -225,8 +236,8 @@ class CompulsoryMultiSelect extends StatefulWidget {
 
 class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
   List<Subject> _compulsorySelections = [];
-  List<MultiSelectItem<Subject>> _compulsoryItems = [];
   List<Subject> compulsorySubjects = [];
+  List<MultiSelectItem<Subject>> _compulsoryItems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +264,7 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
               "전공기초과목",
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 24.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -263,7 +274,7 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
                 "전공기초과목",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 24.0,
+                  fontSize: 22.0,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -292,7 +303,6 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
                   provider.updateElective(List<Subject>.from(_compulsorySelections));
                 });
               },
-
             ),
           ),
         ],
@@ -300,11 +310,6 @@ class _CompulsoryMultiSelectState extends State<CompulsoryMultiSelect> {
     );
   }
 }
-
-
-
-
-
 
 
 //전공선택과목 필드
@@ -341,14 +346,14 @@ class _ElectiveMultiSelectState extends State<ElectiveMultiSelect> {
         children: <Widget>[
           MultiSelectBottomSheetField(
             initialChildSize: 0.6,
-            maxChildSize: 1.2,
+            maxChildSize: 0.8,
             listType: MultiSelectListType.CHIP,
             searchable: true,
             searchHint: '과목명을 입력하세요',
             buttonText: const Text(
               "전공선택과목",
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -357,7 +362,7 @@ class _ElectiveMultiSelectState extends State<ElectiveMultiSelect> {
               child: const Text(
                 "전공선택과목",
                 style: TextStyle(
-                  fontSize: 24.0,
+                  fontSize: 22.0,
                   fontWeight: FontWeight.w800,
                 ),
               ),
