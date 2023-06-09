@@ -188,7 +188,54 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     grade = '';
     permission = '';
     _getUserInfo();
+    _newPasswordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      setState(() => _isLoading = true);
 
+      final storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'token');
+      if (token == null) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = '토큰이 없습니다.';
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+              SnackBar(content: Text('게시글 작성에 실패했습니다. (로그인 만료)')));
+        });
+        return;
+      }
+
+      final response = await http.get(
+        Uri.parse('http://203.247.42.144:443/user/student'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token,
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Success
+
+        final responseData = jsonDecode(response.body);
+        setState(() {
+          isTempPassword = responseData[0]['isTempPassword'].toString();
+        });
+      } else {
+        // Failure
+        setState(() {
+          final responseData = jsonDecode(response.body);
+
+          _isLoading = false;
+          _errorMessage = responseData['message'];
+        });
+      }
+
+      // initState가 호출된 후 한 프레임이 렌더링된 이후에 실행되는 콜백
+      if (isTempPassword == "1") {
+        showChangePasswordDialog();
+      }
+    });
 
     percentageAnimationController = AnimationController(
         vsync: this,
@@ -200,6 +247,122 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               percentage, newPercentage, percentageAnimationController.value)!;
         });
       });
+  }
+
+  late final TextEditingController _newPasswordController;
+  late final TextEditingController _confirmPasswordController;
+
+  String? isTempPassword;
+  Future<void> showChangePasswordDialog() async {
+    final _formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _newPasswordController = TextEditingController();
+        TextEditingController _confirmPasswordController = TextEditingController();
+
+        return AlertDialog(
+          title: Text("비밀번호 변경"),
+          content: Form(
+            key: _formKey, // _formKey 추가
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _newPasswordController,
+                  decoration: InputDecoration(
+                    labelText: "새로운 비밀번호",
+                    hintText: "보안을 위해 비밀번호를 변경해주세요.",
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "비밀번호를 입력 해 주세요";
+                    } else if (value.length < 8) {
+                      return "비밀번호는 8자 이상이어야 합니다";
+                    } else if (!RegExp(
+                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{8,}$')
+                        .hasMatch(value) ||
+                        value.contains('?')) {
+                      return "비밀번호는 대문자, 소문자, 숫자, 특수문자를\n포함하며 '?' 문자를 사용할 수 없습니다";
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: '새로운 비밀번호 확인',
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return '새로운 비밀번호를 다시 입력하세요.';
+                    }
+                    if (value != _newPasswordController.text) {
+                      return '새로운 비밀번호와 일치하지 않습니다.';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  final storage = FlutterSecureStorage();
+                  final token = await storage.read(key: 'token');
+                  if (token == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('토큰이 없습니다.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Send password change request
+                  final response = await http.put(
+                    Uri.parse('http://203.247.42.144:443/user/password'),
+                    headers: <String, String>{
+                      'Content-Type': 'application/json; charset=UTF-8',
+                      'Authorization': token
+                    },
+                    body: jsonEncode(<String, String>{
+                      'password': _newPasswordController.text,
+                    }),
+                  );
+
+                  if (response.statusCode == 201) {
+                    // Password change success
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('비밀번호가 변경되었습니다.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                  } else {
+                    // Password change failed
+                    final responseData = jsonDecode(response.body);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(responseData['message']),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              },
+              child: Text('변경'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
@@ -262,6 +425,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
         ),
       ),
+      floatingActionButton: isTempPassword == "1"
+          ? FloatingActionButton(
+        onPressed: () {
+          showChangePasswordDialog(); // 팝업 창을 띄우는 함수 호출
+        },
+        child: Icon(Icons.lock),
+      )
+          : null,
     );
   }
 }
