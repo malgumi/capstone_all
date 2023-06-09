@@ -482,13 +482,13 @@ class _MyDrawerState extends State<MyDrawer> {
                           }
                       ),
                       ExpansionTile(
-                        title: Text('졸업인증제'),
+                        title: Text('졸업인증제 관리'),
                         leading: Icon(
                             Icons.school, color: Colors.grey[800]),
                         children: <Widget>[
                       ListTile(
                           leading: Icon(Icons.article, color: Colors.grey[800]),
-                          title: Text('졸업인증제 신청 목록'),
+                          title: Text('신청 게시글 목록'),
                           onTap: (){
                             Navigator.push(
                               context,
@@ -498,7 +498,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       ListTile(
                           leading: Icon(Icons.edit_note, color: Colors.grey[800]),
-                          title: Text('졸업인증제 항목 관리'),
+                          title: Text('졸업인증 항목 관리'),
                           onTap: (){
                             if (_accountPermission == "3") {
                               showDialog(
@@ -530,7 +530,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       ListTile(
                           leading: Icon(Icons.playlist_add_check, color: Colors.grey[800]),
-                          title: Text('졸업인증제 일괄 승인'),
+                          title: Text('관리자 단체 승인'),
                           onTap: (){
                             if (_accountPermission == "3") {
                               showDialog(
@@ -563,7 +563,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       ListTile(
                         leading: Icon(Icons.search, color: Colors.grey[800]),
-                        title: Text('졸업인증제 학생정보 열람'),
+                        title: Text('학생 점수 열람'),
                         onTap: () {
                           Navigator.push(
                             context,

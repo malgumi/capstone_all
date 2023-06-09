@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 void main() {
   runApp(MaterialApp(
-    title: '졸업인증제 항목 관리',
+    title: '졸업인증 항목 관리',
     home: GScoreEditor(),
   ));
 }
@@ -113,7 +113,7 @@ class _GScoreEditorState extends State<GScoreEditor> {
 
     if (newActivityName == null || newActivityScore <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('올바른 이름 및 점수를 입력하세요.')));
+          SnackBar(content: Text('활동명 및 점수를 입력하세요.')));
     }
     else {
       if (!activityNames[_selectedActivityType]!.containsKey(newActivityName)) {
@@ -159,7 +159,7 @@ class _GScoreEditorState extends State<GScoreEditor> {
 
     if (newActivityName == null || newActivityScore <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('올바른 이름 및 점수를 입력하세요.')));
+          SnackBar(content: Text('활동명 및 점수를 입력하세요.')));
     }
     else {
       final Map<String, dynamic> postData = {
@@ -233,9 +233,13 @@ class _GScoreEditorState extends State<GScoreEditor> {
   }
 
   void updateActivityType() async {
-    int newActivityTypeScore = int.tryParse(_maxScoreController.text) ?? 0;
+    int? newActivityTypeScore = int.tryParse(_maxScoreController.text);
 
-    if (newActivityTypeScore <= 0) {
+    if (_maxScoreController.text == '') {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('점수를 입력하세요.')));
+    }
+    else if (newActivityTypeScore! <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('0보다 큰 값을 입력하세요.')));
     }
@@ -274,7 +278,7 @@ class _GScoreEditorState extends State<GScoreEditor> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '졸업인증제 항목 관리',
+          '졸업인증 항목 관리',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.0,
@@ -589,30 +593,41 @@ class _GScoreEditorState extends State<GScoreEditor> {
 
                         onPressed: () {
                           if (_selectedActivityType != null) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('확인'),
-                                  content: Text('정말로 값을 수정하시겠습니까?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('취소'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        updateActivityType();
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('수정'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            if(_maxScoreController.text == ''){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('점수를 입력하세요.')));
+                            }
+
+                            else if (int.tryParse(_maxScoreController.text)! <=0) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('0보다 큰 값을 입력하세요.')));
+                            }
+                            else{
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('확인'),
+                                    content: Text('정말로 값을 수정하시겠습니까?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('취소'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          updateActivityType();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('수정'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
                         },
 
