@@ -481,6 +481,11 @@ class _MyDrawerState extends State<MyDrawer> {
                             );
                           }
                       ),
+                      ExpansionTile(
+                        title: Text('졸업인증제'),
+                        leading: Icon(
+                            Icons.school, color: Colors.grey[800]),
+                        children: <Widget>[
                       ListTile(
                           leading: Icon(Icons.article, color: Colors.grey[800]),
                           title: Text('졸업인증제 신청 목록'),
@@ -495,20 +500,65 @@ class _MyDrawerState extends State<MyDrawer> {
                           leading: Icon(Icons.edit_note, color: Colors.grey[800]),
                           title: Text('졸업인증제 항목 관리'),
                           onTap: (){
+                            if (_accountPermission == "3") {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('권한 없음'),
+                                    content: Text('해당 기능은 관리자만 이용할 수 있습니다.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // 경고창 닫기
+                                        },
+                                        child: Text('확인'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                            else{
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => GScoreEditor()),
                             );
+                            }
                           }
                       ),
                       ListTile(
                           leading: Icon(Icons.playlist_add_check, color: Colors.grey[800]),
                           title: Text('졸업인증제 일괄 승인'),
                           onTap: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AdminGScoreForm()),
-                            );
+                            if (_accountPermission == "3") {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('권한 없음'),
+                                    content: Text('해당 기능은 관리자만 이용할 수 있습니다.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // 경고창 닫기
+                                        },
+                                        child: Text('확인'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                            else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AdminGScoreForm()),
+                              );
+                            }
                           }
                       ),
                       ListTile(
@@ -521,6 +571,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           );
                         },
                       ),
+                      ],),
                       ListTile(
                           leading: Icon(Icons.dynamic_feed, color: Colors.grey[800]),
                           title: Text('피드백 및 신고글'),

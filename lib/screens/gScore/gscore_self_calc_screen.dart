@@ -333,8 +333,8 @@ class SelfCalcScreenState extends State<SelfCalcScreen> {
                       tempScore = 40;
                     }
                   }
-                  if (_activityName == 'TOPCIT' && tempScore > 1000) {
-                    tempScore = 1000;
+                  if (_activityName == 'TOPCIT' && tempScore > 250) {
+                    tempScore = 250;
                   }
                   if (_activityType == '인턴십' && tempScore > 150) {
                     tempScore = 150;

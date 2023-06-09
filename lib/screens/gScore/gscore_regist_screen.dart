@@ -265,9 +265,6 @@ class _GScoreApcState extends State<GScoreApc> {
           var response = await dio.post(
             'http://203.247.42.144:443/gScore/upload',
             data: formData,
-            onSendProgress: (int sent, int total) {
-              print("$sent $total");
-            },
           );
 
           print(response.statusCode);
@@ -580,19 +577,14 @@ class _GScoreApcState extends State<GScoreApc> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
-                          readOnly: _activityName == 'TOPCIT' ||
-                              _activityName == '50일 이상'
-                              ? false
-                              : true,
+                          readOnly: true,
                           decoration: const InputDecoration(
                             labelText: '점수',
                             border: OutlineInputBorder(),
                           ),
                           onChanged: _subscore_function,
                           controller: TextEditingController(
-                              text: _activityName == 'TOPCIT' && _subscore != null ? _subscore.toString()
-                                  : _activityName == '50일 이상' && _subscore != null ? _subscore.toString()
-                                  : activityNames[_activityType]?[_activityName]?.toString() ?? ''
+                              text: activityNames[_activityType]?[_activityName]?.toString() ?? ''
                           ),
                         ),
                       ),

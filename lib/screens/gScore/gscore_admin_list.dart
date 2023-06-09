@@ -151,7 +151,7 @@ class _AdminGScoreForm extends State<AdminGScoreForm> {
   }
 
 
-  Widget _buildPostItem(BuildContext context, dynamic post) {
+  Widget _buildPostItem(BuildContext context, dynamic post, int postIndex) {
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
@@ -183,7 +183,7 @@ class _AdminGScoreForm extends State<AdminGScoreForm> {
             children: [
               Container(width: MediaQuery.of(context).size.width * 0.1,
                 alignment: Alignment.center,
-                child: Text(post['gspost_id'].toString(),
+                child: Text(postIndex.toString(),
                   style: TextStyle(
                     fontSize: 14.0,
                   ),
@@ -354,7 +354,7 @@ class _AdminGScoreForm extends State<AdminGScoreForm> {
                               return ListView.builder(
                                 itemCount: posts.length,
                                 itemBuilder: (context, index) {
-                                  return _buildPostItem(context, posts[index]);
+                                  return _buildPostItem(context, posts[index], index+1);
                                 },
                               );
                             } else if (snapshot.hasError) {
