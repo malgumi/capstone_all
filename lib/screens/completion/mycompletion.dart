@@ -202,99 +202,111 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                   //입학년도와 전공유형 선택
                   Container(
                     alignment: Alignment.centerLeft,
-                    height: 80,
+                    height: 110,
                     width: double.infinity,
                     padding: EdgeInsets.only(
                       left: 30.0,
-                      top: 16.0,
-                      right: 16.0,
-                      bottom: 16.0,
+                      top: 14.0,
+                      right: 14.0,
+                      bottom: 14.0,
                     ),
                     decoration: BoxDecoration(
                       color: Color(0xf6dce1ff),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            child: Text('입학년도', style: TextStyle(color: Color(0xff5c6bb9), fontSize: 15, fontWeight: FontWeight.w600),)),
-                        SizedBox(width: 2,),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                        Row(
+                          children: [
+                            Container(
+                                height: 30,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                child: Text('입학년도', style: TextStyle(color: Color(0xff5c6bb9), fontSize: 15, fontWeight: FontWeight.w600),)),
+                            SizedBox(width: 2,),
+                            Container(
+                              height: 30,
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
 
-                          child: DropdownButton<String>(
-                            value: completionProvider.selectedYear,
-                            items: completionProvider.admissionYears
-                                .map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              completionProvider.setSelectedYear(newValue!);
-                            },borderRadius: BorderRadius.circular(8),
-                            dropdownColor: Color(0xffff5f5f5),
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                            iconDisabledColor: const Color(0xff5f5f5),
-                            iconEnabledColor: const Color(0xffC1D3FF),
-                            iconSize: 25,
-                            underline: SizedBox(),
-                          ),
+                              child: DropdownButton<String>(
+                                value: completionProvider.selectedYear,
+                                items: completionProvider.admissionYears
+                                    .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  completionProvider.setSelectedYear(newValue!);
+                                },borderRadius: BorderRadius.circular(8),
+                                dropdownColor: Color(0xffff5f5f5),
+                                icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                                iconDisabledColor: const Color(0xff5f5f5),
+                                iconEnabledColor: const Color(0xffC1D3FF),
+                                iconSize: 25,
+                                underline: SizedBox(),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 10,),
-                        Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            child: Text('전공(이수)유형', style: TextStyle(color: Color(0xff5c6bb9), fontSize: 15, fontWeight: FontWeight.w600),)),
-                        SizedBox(width: 2,),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                        SizedBox(height: 8,),
+                        Row(
+                          children: [
+                            Container(
+                                height: 30,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                child: Text('전공(이수)유형', style: TextStyle(color: Color(0xff5c6bb9), fontSize: 15, fontWeight: FontWeight.w600),)),
+                            SizedBox(width: 2,),
+                            Container(
+                              height: 30,
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
 
-                          child: DropdownButton<String>(
-                            value: completionProvider.selectedMajor,
-                            items: completionProvider
-                                .majorTypes[completionProvider.selectedYear]
-                                ?.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value,
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
-                              );
-                            })?.toList(),
-                            onChanged: (newValue) async {
-                              completionProvider.setSelectedMajor(newValue!);
-                              await completionProvider
-                                  .getCreditToGraduate(); // getCreditToGraduate 메서드 호출
-                            },
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                            iconDisabledColor: const Color(0xff5f5f5),
-                            iconEnabledColor: const Color(0xffC1D3FF),
-                            iconSize: 25,
-                            underline: SizedBox(),
-                          ),
+                              child: DropdownButton<String>(
+                                value: completionProvider.selectedMajor,
+                                items: completionProvider
+                                    .majorTypes[completionProvider.selectedYear]
+                                    ?.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
+                                  );
+                                })?.toList(),
+                                onChanged: (newValue) async {
+                                  completionProvider.setSelectedMajor(newValue!);
+                                  await completionProvider
+                                      .getCreditToGraduate(); // getCreditToGraduate 메서드 호출
+                                },
+                                icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                                iconDisabledColor: const Color(0xff5f5f5),
+                                iconEnabledColor: const Color(0xffC1D3FF),
+                                iconSize: 25,
+                                underline: SizedBox(),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     )
                     ,
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 30,),
 
                   //전공학점
                   Container(
                     child: Column(
                       children: [
                         Container(
-                          height: 80,
+                          height: 100,
                           padding: EdgeInsets.fromLTRB(22, 16, 16, 16),
                           margin: EdgeInsets.only(left: 30.0, right: 30.0),
                           decoration: BoxDecoration(
@@ -517,8 +529,8 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                                   '${completionProvider.completedCompulsory.length}과목 | ${completionProvider.totalCompulsoryCredits}학점',
                                   style: TextStyle(
                                     color: Color(0xff686868),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
@@ -527,11 +539,11 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                               height: 8.0,
                             ),
                             Text(
-                              '※ 전공기초학점은 교양학점으로 인정되어 전공학점에 포함되지 않음',
+                              '※ 전공기초학점은 교양학점으로 인정되어 전공학점에 포함되지 않음.',
                               style: TextStyle(
                                 color: Color(0xff858585),
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -608,7 +620,7 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                               style: TextStyle(
                                 color: Color(0xff686868),
                                 fontSize: 17.0,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             FutureBuilder<int>(
@@ -627,8 +639,8 @@ class _CompletionStatusPageState extends State<CompletionStatusPage> {
                                     '${snapshot.data}학점',
                                     style: TextStyle(
                                       color: Color(0xff686868),
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   );
                                 }
