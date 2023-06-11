@@ -71,7 +71,7 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://capstone-c28c6-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'capstone-c28c6.appspot.com',
     iosClientId: '241700246642-gpr0rb8ed993usffo5huh6tt82s2ie2e.apps.googleusercontent.com',
-    iosBundleId: 'com.example.capstone',
+    iosBundleId: 'com.capstone0618',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -82,6 +82,6 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://capstone-c28c6-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'capstone-c28c6.appspot.com',
     iosClientId: '241700246642-gpr0rb8ed993usffo5huh6tt82s2ie2e.apps.googleusercontent.com',
-    iosBundleId: 'com.example.capstone',
+    iosBundleId: 'com.capstone0618',
   );
 }

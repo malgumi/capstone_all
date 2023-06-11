@@ -185,8 +185,8 @@ class QnABoardScreenState extends State<QnABoardScreen> {
                   if (snapshot.hasData) {
                     final posts = snapshot.data!;
                     final filterposts = _searchController.text.isEmpty ? posts : _filteredPosts;
-                    final int index81 = posts.indexWhere((post) => post['post_id'] == 81);
-                    // 81번 게시물을 찾아서 해당 게시물을 리스트의 맨 앞으로 이동
+                    final int index81 = posts.indexWhere((post) => post['post_id'] == 385);
+                    // FAQ 게시물을 찾아서 해당 게시물을 리스트의 맨 앞으로 이동
                     if (index81 != -1) {
                       final post81 = posts.removeAt(index81);
                       posts.insert(0, post81);

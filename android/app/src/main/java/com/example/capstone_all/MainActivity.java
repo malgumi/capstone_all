@@ -1,4 +1,4 @@
-package com.example.capstone_all;
+package com.capstone0618_all;
 
 import io.flutter.embedding.android.FlutterActivity;
 
